@@ -1,0 +1,161 @@
+package ${package}.${moduleName}.service.impl;
+
+import com.guanyun.party.system.core.web.grid.GridData;
+import com.guanyun.party.system.core.web.grid.GridRequest;
+import com.guanyun.party.system.sys.model.User;
+import com.guanyun.party.utils.StringUtil;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import java.util.Date;
+import java.util.List;
+import com.guanyun.party.service.dao.${className}Dao;
+import com.guanyun.party.service.model.${className}Entity;
+import com.guanyun.party.service.service.${className}Service;
+import com.guanyun.party.system.core.web.JsonResponse;
+
+
+/**
+ * ${comments}
+ *
+ * @author ${author}
+ * @date ${datetime}
+ * @version 1.0
+ * @since JDK1.8
+ */
+
+@Service("${classname}Service")
+public class ${className}ServiceImpl implements ${className}Service {
+
+    @Autowired
+    private ${className}Dao entityDao;
+
+    /**
+     * description: 根据id查询${comments}
+     * @author: ${author}
+     * @date: ${datetime}
+     * @param id
+     * @return: JsonResponse
+     */
+    @Override
+    public JsonResponse findById(Long id) {
+        //验证id不能为空
+        if (null == id){
+            return JsonResponse.fail().setMsg("id不能为空");
+        }
+        ${className}Entity entity = entityDao.findById((long)id);
+        //验证数据是否存在
+        if (null == entity) {
+            return JsonResponse.fail().setMsg("该数据不存在");
+        }
+        return JsonResponse.success().setData(entity);
+    }
+
+    /**
+     * description: 查询所有有效${comments}（不分页）
+     * @author:  ${author}
+     * @date: ${datetime}
+     * @return: JsonResponse
+     */
+    @Override
+    public JsonResponse findAll() {
+        //查询所有有效${comments}
+        List<${className}Entity> entityList = entityDao.findAll();
+        return JsonResponse.success().setData(entityList);
+    }
+
+    /**
+     * description: 查询${comments}（分页）
+     * @author:  ${author}
+     * @date: ${datetime}
+     * @param gridRequest
+     * @return: JsonResponse
+     */
+    @Override
+    public JsonResponse findByPage(GridRequest<${className}Entity> gridRequest) {
+        Page<${className}Entity> entityList = entityDao.findByPage(gridRequest.getParams(),gridRequest.getPageInfo());
+        GridData gridData = new GridData(entityList.getTotalElements(), gridRequest.getPageInfo().getCurrentPage(),
+                gridRequest.getPageInfo().getSizePerPage(), entityList.getContent());
+        return JsonResponse.success().setData(gridData);
+    }
+
+    /**
+     * description: 创建${comments}
+     * @author:  ${author}
+     * @date:  ${datetime}
+     * @param entity
+     * @return: JsonResponse
+     */
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public JsonResponse save(${className}Entity entity,User user) {
+
+        //创建人id
+        entity.setCreateId(user.getId());
+        //创建人用户名
+        entity.setCreateName(user.getName());
+        //失效状态0有效1失效
+        entity.setInvalid(0);
+        //设置创建时间
+        entity.setCreateTime(new Date());
+        //更新时间默认当前时间
+        entity.setUpdateTime(new Date());
+        //保存
+        entityDao.save(entity);
+        return JsonResponse.success().setMsg("创建成功");
+    }
+
+    /**
+     * description: 更新${comments}
+     * @author:  ${author}
+     * @date: ${datetime}
+     * @param entity
+     * @return: JsonResponse
+     */
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public JsonResponse update(${className}Entity entity,User user) {
+        //查询原有类型数据
+        ${className}Entity old = entityDao.findById((long)entity.getId());
+        if(null == old){
+            return JsonResponse.fail().setMsg("该数据不存在");;
+        }
+        BeanUtils.copyProperties(entity,old);
+        //设置更新人id
+        entity.setUpdateId(user.getId());
+        //设置更新人名称
+        entity.setUpdateName(user.getName());
+        //设置更新时间
+        entity.setUpdateTime(new Date());
+        //保存
+        entityDao.save(entity);
+        return JsonResponse.success().setMsg("${comments}修改成功");
+    }
+
+    /**
+     * description: 删除${comments}（逻辑删除）
+     * @author: ${author}
+     * @date:  ${datetime}
+     * @param id
+     * @return: JsonResponse
+     */
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public JsonResponse deleteBy${className}(Long id) {
+        //验证id不能为空
+        if (null == id) {
+            return JsonResponse.fail().setMsg("id不能为空");
+        }
+        ${className}Entity entity = entityDao.findById((long)id);
+        //验证类型是否存在
+        if(entity == null){
+            return JsonResponse.fail().setMsg("该${comments}不存在");
+        }
+        //更新状态为删除
+        entityDao.deleteBy${className}(entity);
+        return JsonResponse.success().setMsg("删除${comments}成功");
+    }
+
+}

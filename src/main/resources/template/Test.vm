@@ -1,0 +1,106 @@
+package com.guanyun.party.service.controller;
+
+import com.guanyun.party.PartyApplication;
+import com.guanyun.party.service.model.${className}Entity;
+import com.guanyun.party.service.service.${className}Service;
+import com.guanyun.party.system.core.model.PageInfo;
+import com.guanyun.party.system.core.web.grid.GridRequest;
+import com.guanyun.party.system.sys.model.User;
+import com.guanyun.party.system.sys.service.UserService;
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
+
+/**
+* ${comments}
+*
+* @author ${author}
+* @createDate ${datetime}
+* @version 1.0
+* @since JDK1.8
+*/
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = PartyApplication.class)
+public class ${className}ControllerTest {
+
+    @Autowired
+    private ${className}Service entityService;
+
+    @Autowired
+    private UserService userService;
+
+    @Test
+    public void listAllTest() throws Exception {
+        Assert.assertEquals(1,entityService.findAll().getStatus());
+    }
+
+    @Test
+    public void listTest() throws Exception {
+        GridRequest request = new GridRequest();
+        ${className}Entity entity = new ${className}Entity();
+        PageInfo pageInfo = new PageInfo();
+        request.setParams(entity);
+        request.setPageInfo(pageInfo);
+        Assert.assertEquals(1,entityService.findByPage(request).getStatus());
+    }
+
+    @Test
+    public void findByIdNotNullTest() throws Exception {
+        Assert.assertNotNull("id不能为空",entityService.findById((long)1));
+    }
+
+    @Test
+    public void findByIdIsNullTest() throws Exception {
+        Assert.assertEquals("id不能为空",entityService.findById(null).getMsg());
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    public void createTestIsNotNull() throws Exception {
+        ${className}Entity entity = new ${className}Entity();
+        entity.setId((long)1);
+        User user = userService.get((long)1);
+        Assert.assertNotNull("创建成功",entityService.save(entity,user).getMsg());
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    public void updateTestIsNotNull() throws Exception {
+        ${className}Entity entity = new ${className}Entity();
+        entity.setId((long)1);
+        User user = userService.get((long)1);
+        Assert.assertNotNull("${className}修改成功",entityService.update(entity,user).getMsg());
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    public void updateTestIsNull() throws Exception {
+        ${className}Entity entity = new ${className}Entity();
+        User user = userService.get((long)1);
+        Assert.assertEquals("该数据不存在",entityService.update(entity,user).getMsg());
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    public void deleteByIdIsNotNullTest() throws Exception {
+        Assert.assertNotNull("id不能为空",entityService.deleteBy${className}((long)1));
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    public void deleteByIdIsNullTest() throws Exception {
+        Assert.assertEquals("id不能为空", entityService.deleteBy${className}(null).getMsg());
+    }
+
+}

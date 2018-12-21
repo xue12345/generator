@@ -1,0 +1,118 @@
+<template>
+  <div class="mod-config">
+    <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
+      <el-form-item>
+        <el-input v-model="dataForm.key" placeholder="参数名" clearable></el-input>
+      </el-form-item>
+      <el-form-item>
+        <el-button @click="getDataList()">查询</el-button>
+        <el-button v-if="isAuth('${moduleName}:${pathName}:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
+        <el-button v-if="isAuth('${moduleName}:${pathName}:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
+      </el-form-item>
+    </el-form>
+    <el-table
+      :data="dataList"
+      border
+      v-loading="dataListLoading"
+      @selection-change="selectionChangeHandle"
+      style="width: 100%;">
+      <el-table-column
+        type="selection"
+        header-align="center"
+        align="center"
+        width="50">
+      </el-table-column>
+#foreach($column in $columns)
+      <el-table-column
+        prop="${column.attrname}"
+        header-align="center"
+        align="center"
+        label="${column.comments}">
+      </el-table-column>
+#end
+      <el-table-column
+        fixed="right"
+        header-align="center"
+        align="center"
+        width="150"
+        label="操作">
+        <template slot-scope="scope">
+          <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.${pk.attrname})">修改</el-button>
+          <el-button type="text" size="small" @click="deleteHandle(scope.row.${pk.attrname})">删除</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+    <el-pagination
+      @size-change="sizeChangeHandle"
+      @current-change="currentChangeHandle"
+      :current-page="pageIndex"
+      :page-sizes="[10, 20, 50, 100]"
+      :page-size="pageSize"
+      :total="totalPage"
+      layout="total, sizes, prev, pager, next, jumper">
+    </el-pagination>
+    <!-- 弹窗, 新增 / 修改 -->
+    <add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshDataList="getDataList"></add-or-update>
+  </div>
+</template>
+<template>
+    <div class = "menu-page" id = "list">
+        <el-form :model = "searchForm" ref = "searchForm" @keyup.enter.native = "search()" class="condition-bar"  label-width="80px">
+            <el-form-item label = "角色管理"></el-form-item>
+            <el-button type = "primary" class = "right" size = "medium" @click = "editRole()" id="clickForm">创建角色</el-button>
+            <hr>
+            <el-form-item label = "角色名称:" prop = "name">
+                <el-input v-model = "searchForm.name" placeholder = "请输入内容" maxlength = "10"></el-input>
+            </el-form-item>
+            <el-form-item class = "right">
+                <el-button type = "primary" size = "medium" @click = "search()" id="search">查询</el-button>
+                <el-button type = "primary" size = "medium" @click = "resetSearch()" id="clear">清除</el-button>
+            </el-form-item>
+        </el-form>
+        <!--表格展示-->
+        <div class = "dt-table">
+            <!--會議列表-->
+            <el-table :data = "listInfo.tableData" height = "calc(100% - 32px)">
+              #foreach($column in $columns)
+                  <el-table-column
+                          prop="${column.attrname}"
+                          header-align="center"
+                          align="center"
+                          label="${column.comments}">
+                  </el-table-column>
+              #end
+                <el-table-column label = "描述" prop = "description"></el-table-column>
+                <el-table-column label = "操作" width = "400">
+                    <template slot-scope = "scope">
+                        <label
+                                v-if = "resourceAuth.editButton"
+                                @click = "editRow(scope.row,'edit')" class = "operatorfont"
+                        >编辑</label>
+                        <label
+                                v-if = "resourceAuth.delButton"
+                                @click = "delRow(scope.row)"
+                                class = "operatorfont"
+                        >删除</label>
+                    </template>
+                </el-table-column>
+            </el-table>
+            <!--分页设置-->
+            <el-pagination
+                    class = "pagination"
+                    @size-change = "handleSizeChange"
+                    @current-change = "handleCurrentChange"
+                    :current-page = "listInfo.currentPage"
+                    :page-sizes = "[10, 20, 30, 50]"
+                    :page-size = "listInfo.pageSize"
+                    :total = "listInfo.total"
+                    layout = "total, sizes, prev, pager, next, jumper"
+            ></el-pagination>
+        </div>
+        <!-- =======start===============隐藏的弹出框内容 添加内容================= -->
+        <add-or-update :dialoginfo = "dialogInfo" :showitem = "showItem" @changeFlag = "search">
+        </add-or-update>
+        <!-- =======end=============隐藏的弹出框内容 资源管理======================== -->
+    </div>
+</template>
+<style src = "../../../static/css/base.css"></style>
+<script src = "./list.js"></script>

@@ -1,0 +1,75 @@
+package ${package}.${moduleName}.service;
+
+import com.guanyun.party.service.model.${className}Entity;
+import com.guanyun.party.system.core.web.JsonResponse;
+import com.guanyun.party.system.core.web.grid.GridRequest;
+import com.guanyun.party.system.sys.model.User;
+import java.util.Map;
+
+/**
+ * ${comments}
+ *
+ * @author    ${author}
+ * @date      ${datetime}
+ * @version   1.0
+ * @since     JDK1.8
+ */
+public interface ${className}Service{
+
+    /**
+     * description:  根据id查询${comments}
+     * @Author:      ${author}
+     * @Date:        ${datetime}
+     * @param        id
+     * @return:      JsonResponse
+     */
+    public JsonResponse findById(Long id);
+
+    /**
+     * description: 查询所有有效${comments}（不分页）
+     * @author:     ${author}
+     * @date:       ${datetime}
+     * @return:     JsonResponse
+     */
+    public JsonResponse findAll();
+
+    /**
+     * description: 查询${comments}（分页）
+     * @author:     ${author}
+     * @date:       ${datetime}
+     * @param       gridRequest
+     * @return:     JsonResponse
+     */
+    public JsonResponse findByPage(GridRequest<${className}Entity> gridRequest);
+
+    /**
+     * description: 创建${comments}
+     * @author:     ${author}
+     * @date:       ${datetime}
+     * @param       entity
+     * @param       user
+     * @return:     JsonResponse
+     */
+    public JsonResponse save(${className}Entity entity,User user);
+
+    /**
+     * description: 更新${comments}
+     * @author:     ${author}
+     * @date:       ${datetime}
+     * @param       entity
+     * @param       user
+     * @return:     JsonResponse
+     */
+    public JsonResponse update(${className}Entity entity,User user);
+
+    /**
+     * description: 删除${comments}(逻辑删除)
+     * @author:     ${author}
+     * @date:       ${datetime}
+     * @param       id
+     * @return:     JsonResponse
+     */
+    public JsonResponse deleteBy${className}(Long id);
+
+}
+

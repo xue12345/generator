@@ -1,0 +1,24 @@
+<!--隐藏的弹出框内容 添加与删除-->
+<template>
+    <el-dialog :title="dialoginfo.title"  :visible.sync="dialoginfo.visible" :close-on-click-modal="false">
+        <div class="panel">
+            <el-form :model="showitem" status-icon :rules="formRules" ref="showitem"
+                    label-width="80px" size="medium" :disabled="dialoginfo.read" >
+                    #foreach($column in $columns)
+                        #if($column.columnName != $pk.columnName)
+                            <el-form-item label="${column.comments}" prop="${column.attrname}">
+                                <el-input v-model="dataForm.${column.attrname}" placeholder="${column.comments}"></el-input>
+                            </el-form-item>
+                        #end
+                    #end
+            </el-form>
+        </div>
+        <div slot="footer" class="dialog-footer">
+            <el-button type="primary" @click="saveRole(showitem)" v-if="!dialoginfo.read">
+                保存
+            </el-button>
+        </div>
+    </el-dialog>
+</template>
+<script src="./addOrUpdate.js"></script>
+

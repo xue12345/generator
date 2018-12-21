@@ -1,0 +1,88 @@
+package ${package}.${moduleName}.dao;
+
+import com.guanyun.party.service.model.${className}Entity;
+import com.guanyun.party.system.core.model.PageInfo;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.repository.query.Param;
+import javax.persistence.criteria.Predicate;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * ${comments}
+ *
+ * @author  ${author}
+ * @date    ${datetime}
+ * @version 1.0
+ * @since   JDK1.8
+ */
+public interface ${className}Dao extends PagingAndSortingRepository<${className}Entity, Long>,JpaSpecificationExecutor<${className}Entity> {
+
+    /**
+     * description: 根据id查询${comments}
+     * @author:     ${author}
+     * @date:       ${datetime}
+     * @param       id
+     * @return:     ${className}对象
+     */
+    ${className}Entity findById(long id);
+
+    /**
+     * description: 分页查询${comments}
+     * @author:     ${author}
+     * @date:       ${datetime}
+     * @param       entity
+     * @param       pageInfo
+     * @return      Page<${className}>
+     */
+    default Page<${className}Entity> findByPage(${className}Entity entity, PageInfo pageInfo) {
+        Pageable pageable = PageRequest.of(pageInfo.getCurrentPage(), pageInfo.getSizePerPage(),
+                pageInfo.getSortOrder(), pageInfo.getSortField());
+        Page<${className}Entity> entityList = this.findAll((Specification<${className}Entity>) (root, query, criteriaBuilder) -> {
+            List<Predicate> predicates = new ArrayList<>();
+            if (entity != null) {
+                /**
+                * 示例代码
+                * //按名称进行搜索
+                * if (entity.getName() != null && !entity.getName().isEmpty()) {
+                *    predicates.add(criteriaBuilder.like(root.get("name"), "%" + entity.getName() + "%"));
+                * }
+                *
+                */
+                //查询有效数据
+                predicates.add(criteriaBuilder.equal(root.get("invalid"),0));
+            }
+            return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
+        }, pageable);
+        return entityList;
+    }
+
+    /**
+     * description: 查询所有有效${comments}，不分页
+     * @author:     ${author}
+     * @date:       ${datetime}
+     * @return:     List<${className}Entity>
+     */
+    @Query(value = "from ${className}Entity where invalid = 0")
+    @Override
+    List<${className}Entity> findAll();
+
+    /**
+     * description: 删除 ${comments} (逻辑删除 )
+     * @author:     ${author}
+     * @date:       ${datetime}
+     * @param       entity
+     * @return
+     */
+    default void deleteBy${className}(${className}Entity entity){
+        entity.setInvalid(1);
+        save(entity);
+    }
+
+}

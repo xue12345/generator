@@ -1,0 +1,5 @@
+/.idea
+/generator.iml
+/src/test
+src/test/
+target/

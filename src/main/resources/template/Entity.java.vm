@@ -1,0 +1,61 @@
+package ${package}.${moduleName}.entity;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+import javax.persistence.*;
+import java.io.Serializable;
+import java.util.Date;
+
+/**
+ * @title:       ${comments}
+ * @description: ${comments}
+ * @author       ${author}
+ * @date         ${datetime}
+ * @version      V1.0
+ *
+ */
+@Entity
+@Data
+@Table(name = "${tableName}")
+@ApiModel(value = "${comments}")
+public class ${className}Entity  implements Serializable {
+    private static final long serialVersionUID = 1L;
+
+    #foreach ($column in $columns)
+
+        /**
+         * $column.comments
+         * */
+        #if($column.columnName == $pk.columnName)
+@Id
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        @Column(name = "$column.columnName", nullable = false,columnDefinition = "$column.comments")
+        @ApiModelProperty(value = "$column.comments")
+        private long $column.attrname;
+        #end
+        #if($column.attrType == 'Date')
+@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
+        @Column(name = "$column.columnName", nullable = false,columnDefinition = "$column.comments")
+        @ApiModelProperty(value = "$column.comments")
+        private $column.attrType $column.attrname;
+        #end
+        #if($column.attrType == 'String')
+@Column(name ="$column.columnName",nullable = true,length = 255,columnDefinition = "$column.comments")
+        private $column.attrType $column.attrname;
+        #end
+        #if($column.attrType == 'Long')
+@Column(name ="$column.columnName",nullable = true,length = 50,columnDefinition = "$column.comments")
+        private $column.attrType $column.attrname;
+        #end
+        #if($column.attrType == 'Integer')
+@Column(name ="$column.columnName",nullable = true,length = 50,columnDefinition = "$column.comments")
+        private $column.attrType $column.attrname;
+        #end
+    #end
+
+
+
+
+}

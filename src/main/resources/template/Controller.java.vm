@@ -1,0 +1,176 @@
+package ${package}.${moduleName}.controller;
+
+import com.guanyun.party.service.model.${className}Entity;
+import com.guanyun.party.service.service.${className}Service;
+import com.guanyun.party.system.core.web.JsonResponse;
+import com.guanyun.party.system.core.web.grid.GridRequest;
+import com.guanyun.party.system.sys.model.User;
+import com.guanyun.party.system.sys.service.UserService;
+import com.guanyun.party.system.sys.utils.SecurityUtil;
+import com.guanyun.party.utils.StringUtil;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.*;
+
+/**
+ * ${comments}
+ *
+ * @author ${author}
+ * @date ${datetime}
+ * @version 1.0
+ * @since JDK1.8
+ */
+@RestController
+@RequestMapping(value = "/${pathName}")
+@Api(value = "${className}", description = "${comments}")
+public class ${className}Controller {
+
+    @Autowired
+    private ${className}Service entityService;
+
+    /**
+     * description: 根据id查询${comments}
+     * @author: ${author}
+     * @date: ${datetime}
+     * @param id
+     * @return: JsonResponse
+     */
+    @RequestMapping(value = "/findById", method = RequestMethod.GET)
+    @ResponseBody
+    @ApiOperation(value = "根据id查询${comments}",  httpMethod = "GET")
+    public JsonResponse get(@RequestParam Long id) {
+
+        try {
+            return  entityService.findById(id);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return JsonResponse.fail().setMsg("获取该数据失败");
+        }
+    }
+
+    /**
+     * description: 查询${comments},分页
+     * @author: ${author}
+     * @date: ${datetime}
+     * @param gridRequest
+     * @return: JsonResponse
+     */
+    @RequestMapping(value = "/list",method = RequestMethod.POST)
+    @ResponseBody
+    @ApiOperation(value = "查询${comments},分页",  httpMethod = "POST")
+    public JsonResponse list(@RequestBody GridRequest<${className}Entity> gridRequest) {
+
+        try {
+            return  entityService.findByPage(gridRequest);
+        }catch (Exception e){
+            e.printStackTrace();
+            return JsonResponse.fail().setMsg("查询列表失败");
+        }
+    }
+
+    /**
+     * description: 查询所有${comments},不分页
+     * @author: ${author}
+     * @date: ${datetime}
+     * @return: JsonResponse
+     */
+    @RequestMapping(value = "/findAll",method = RequestMethod.GET)
+    @ResponseBody
+    @ApiOperation(value = "查询所有${comments},不分页",  httpMethod = "GET")
+    public JsonResponse findAll() {
+
+        try {
+            return  entityService.findAll();
+        }catch (Exception e){
+            e.printStackTrace();
+            return JsonResponse.fail().setMsg("查询列表失败");
+        }
+    }
+
+    /**
+     * description: 保存${comments}
+     * @author: ${author}
+     * @date: ${datetime}
+     * @param: entity
+     * @return: JsonResponse
+     */
+    @RequestMapping(value = "/save",method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    @ApiOperation(value = "${comments}",  httpMethod = "POST")
+    public JsonResponse create(@RequestBody ${className}Entity entity) {
+
+        try {
+            //获取当前登录人
+            String operatorName = SecurityContextHolder.getContext().getAuthentication().getName();
+            if(StringUtil.isEmpty(operatorName)){
+                return JsonResponse.fail().setMsg("请重新登录");
+            }
+            System.out.println("当前登录人:" + operatorName);
+            User user = SecurityUtil.getUser();
+            //验证当前用户是否存在
+            if(null == user){
+                return JsonResponse.fail().setMsg("当前用户不存在");
+            }
+            return  entityService.save(entity,user);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return JsonResponse.fail().setMsg("创建该类型失败");
+        }
+
+    }
+
+    /**
+     * description: 更新${comments}
+     * @author: ${author}
+     * @date: ${datetime}
+     * @param entity
+     * @return: JsonResponse
+     */
+    @PostMapping(value = "/update")
+    @ResponseBody
+    @ApiOperation(value = "更新${comments}",  httpMethod = "POST")
+    public JsonResponse update(@RequestBody ${className}Entity entity) {
+
+        try {
+            //获取当前登录人
+            String operatorName = SecurityContextHolder.getContext().getAuthentication().getName();
+            if(StringUtil.isEmpty(operatorName)){
+                return JsonResponse.fail().setMsg("请重新登录");
+            }
+            System.out.println("当前登录人:" + operatorName);
+            User user = SecurityUtil.getUser();
+            //验证当前用户是否存在
+            if(null == user){
+                return JsonResponse.fail().setMsg("当前用户不存在");
+            }
+            return entityService.update(entity,user);
+        } catch (Exception e) {
+            return JsonResponse.fail().setMsg("更新${comments}失败");
+        }
+
+    }
+
+    /**
+     * description: 删除${comments}
+     * @author: ${author}
+     * @date: ${datetime}
+     * @param id
+     * @return: JsonResponse
+     */
+    @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
+    @ResponseBody
+    @ApiOperation(value = "删除${comments}")
+    public JsonResponse deleteById(@RequestParam("id") Long id) {
+
+        try {
+            return entityService.deleteBy${className}(id);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return JsonResponse.fail().setMsg("删除${comments}失败");
+        }
+    }
+
+}
